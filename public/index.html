@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus360 - Hostel & Campus Management</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-badge">C360</div>
+      <div>
+        <h1 class="brand-title">Campus360</h1>
+        <p class="brand-sub">Hostel & Campus Operations</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Dark Mode Toggle -->
+      <button id="btn-theme-toggle" class="btn-theme" title="Toggle Theme" aria-label="Toggle Theme">
+        <span id="theme-label">Theme</span>
+      </button>
+
+      <!-- Notifications Bell (Accessible to both Student and Admin) -->
+      <div id="nav-notif-container" class="notif-wrapper hidden">
+        <button id="btn-notif-toggle" class="btn-notif" title="Notifications" aria-label="View Notifications">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span id="notif-badge" class="notif-badge hidden">0</span>
+        </button>
+
+        <!-- Notification Dropdown Panel -->
+        <div id="notif-dropdown" class="notif-dropdown hidden">
+          <div class="notif-header">
+            <h4>Notifications</h4>
+            <button id="btn-mark-all-read" class="text-btn">Mark all as read</button>
+          </div>
+          <div id="notif-list" class="notif-items">
+            <p class="empty-text">No notifications</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile Badge & Logout -->
+      <div id="user-display" class="user-display hidden">
+        <div class="user-meta">
+          <span id="active-user-name" class="user-name">User</span>
+          <span id="active-user-badge" class="user-role-badge">Student</span>
+        </div>
+        <button id="btn-logout" class="btn btn-sm btn-outline">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container">
+
+    <!-- 1. Authentication View -->
+    <section id="view-login" class="view active">
+      <div class="card auth-card">
+        <div class="auth-header">
+          <h2>Sign In</h2>
+          <p class="subtitle">Enter your institutional credentials to access services</p>
+        </div>
+
+        <form id="form-login">
+          <div class="form-group">
+            <label for="login-email">College Email ID</label>
+            <input type="email" id="login-email" placeholder="student@college.edu or admin@campus.edu" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+
+        <div class="auth-hints">
+          <p><strong>Student Login:</strong> Any email (e.g. <code>student@college.edu</code>) | Password: <code>12345</code></p>
+          <p><strong>Admin Login:</strong> <code>admin@campus.edu</code> | Password: <code>adminSecurePass99</code></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Student Dashboard Hub -->
+    <section id="view-student" class="view">
+      <!-- Student Sub-Navigation Tabs -->
+      <nav class="sub-nav">
+        <button class="nav-tab active" onclick="switchStudentTab('overview')">Overview</button>
+        <button class="nav-tab" onclick="switchStudentTab('raise-ticket')">Raise Complaint</button>
+        <button class="nav-tab" onclick="switchStudentTab('my-tickets')">My Tickets</button>
+        <button class="nav-tab" onclick="switchStudentTab('lost-found')">Lost &amp; Found</button>
+        <button class="nav-tab" onclick="switchStudentTab('announcements')">Announcements</button>
+        <button class="nav-tab" onclick="switchStudentTab('room-info')">Hostel &amp; Room</button>
+        <button class="nav-tab tab-urgent" onclick="switchStudentTab('sos')">Emergency SOS</button>
+      </nav>
+
+      <!-- Tab A: Student Overview / Home -->
+      <div id="student-tab-overview" class="tab-panel active">
+        <div class="welcome-banner">
+          <div>
+            <h2 id="student-welcome-msg">Student Portal</h2>
+            <p>Hostel care, maintenance dispatch, and safety assistance desk.</p>
+          </div>
+          <div class="room-quick-chip" id="overview-room-chip">
+            <span>Loading accommodation details...</span>
+          </div>
+        </div>
+
+        <!-- 3 Primary Action Cards -->
+        <div class="dashboard-grid">
+          <div class="card action-card" onclick="switchStudentTab('raise-ticket')">
+            <div class="card-indicator">Service Request</div>
+            <h3>Raise Complaint</h3>
+            <p>Describe your issue in plain language. Automated semantic conditioning handles department routing and urgency prioritization.</p>
+            <button class="btn btn-secondary btn-sm">New Complaint</button>
+          </div>
+
+          <div class="card action-card" onclick="switchStudentTab('lost-found')">
+            <div class="card-indicator">Campus Board</div>
+            <h3>Lost &amp; Found</h3>
+            <p>Register missing or discovered belongings with photographs. Keyword analysis matches reports automatically.</p>
+            <button class="btn btn-secondary btn-sm">Browse Notices</button>
+          </div>
+
+          <div class="card action-card sos-card" onclick="switchStudentTab('sos')">
+            <div class="card-indicator text-danger">Safety Alert</div>
+            <h3>Emergency SOS</h3>
+            <p>Direct alert broadcasting your current coordinates to hostel administration and campus security team.</p>
+            <button class="btn btn-danger btn-sm">Trigger SOS</button>
+          </div>
+        </div>
+
+        <!-- Recent Announcements & Active Tickets Snippets -->
+        <div class="two-col-grid" style="margin-top: 1.5rem;">
+          <div class="card">
+            <div class="card-header-bar">
+              <h4>Recent Announcements</h4>
+              <button class="text-btn" onclick="switchStudentTab('announcements')">View All</button>
+            </div>
+            <div id="overview-announcements-list" class="mini-feed">
+              <p class="empty-text">Loading notices...</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-bar">
+              <h4>Active Complaints</h4>
+              <button class="text-btn" onclick="switchStudentTab('my-tickets')">View All</button>
+            </div>
+            <div id="overview-tickets-list" class="mini-feed">
+              <p class="empty-text">No active complaints logged.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab B: Raise Ticket -->
+      <div id="student-tab-raise-ticket" class="tab-panel">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <h3>Raise Maintenance Complaint</h3>
+            <p class="subtitle">Describe your issue in plain English. Routing category and urgency level will be determined automatically.</p>
+          </div>
+
+          <form id="form-ticket">
+            <div class="form-group">
+              <label for="ticket-desc">Complaint Description</label>
+              <textarea id="ticket-desc" rows="4" placeholder="Describe the fault or issue clearly (e.g. Bathroom sink pipe is leaking heavily and water is overflowing)..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-submit-ticket">Submit Complaint</button>
+          </form>
+
+          <div id="ticket-feedback" class="feedback-msg"></div>
+        </div>
+      </div>
+
+      <!-- Tab C: My Tickets & Complaint Tracking -->
+      <div id="student-tab-my-tickets" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>My Complaint Tickets</h3>
+              <p class="subtitle">Lifecycle status, assigned technicians, notes, and resolution tracking for your reported issues.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadStudentTickets()">Refresh</button>
+          </div>
+
+          <div id="student-tickets-container" class="ticket-list-stack">
+            <p class="empty-text">Loading tickets...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab D: Lost & Found Board with Matching -->
+      <div id="student-tab-lost-found" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Campus Lost &amp; Found</h3>
+              <p class="subtitle">Browse reported items across campus or report a misplaced or recovered item.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="toggleStudentLFForm()">+ Post Item Notice</button>
+          </div>
+
+          <!-- Post Form (Collapsible) -->
+          <form id="form-lostfound" class="form-horizontal hidden" enctype="multipart/form-data">
+            <h4>Report Item</h4>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="lf-type">Notice Type</label>
+                <select id="lf-type" required>
+                  <option value="Lost">Lost Item</option>
+                  <option value="Found">Found Item</option>
+                </select>
+              </div>
+              <div class="form-group flex-2">
+                <label for="lf-name">Item Name &amp; Description</label>
+                <input type="text" id="lf-name" placeholder="e.g. Dell 65W Laptop Charger" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-2">
+                <label for="lf-location">Location Last Seen / Found</label>
+                <input type="text" id="lf-location" placeholder="e.g. Block B, 2nd Floor Study Room" required>
+              </div>
+              <div class="form-group flex-1">
+                <label for="lf-image">Photograph (Required)</label>
+                <input type="file" id="lf-image" accept="image/*" required>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-secondary btn-sm">Publish Notice</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="toggleStudentLFForm()">Cancel</button>
+            </div>
+          </form>
+
+          <div id="lostfound-gallery" class="items-gallery">
+            <p class="empty-text">Loading notices...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab E: Announcements -->
+      <div id="student-tab-announcements" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Campus &amp; Hostel Announcements</h3>
+              <p class="subtitle">Official circulars, utility maintenance, and hostel administration notices.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadAnnouncements('student')">Refresh</button>
+          </div>
+
+          <div id="student-announcements-list" class="announcements-stack">
+            <p class="empty-text">Loading announcements...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab F: Hostel / Room Information -->
+      <div id="student-tab-room-info" class="tab-panel">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <h3>Hostel &amp; Room Allocation</h3>
+            <p class="subtitle">Official residential record linked to your registered student profile.</p>
+          </div>
+
+          <div id="student-room-details" class="room-details-grid">
+            <p class="empty-text">Loading accommodation details...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab G: Emergency SOS View -->
+      <div id="student-tab-sos" class="tab-panel">
+        <div class="card panel-card sos-card-large">
+          <div class="sos-banner">
+            <h2>Emergency SOS Station</h2>
+            <p>Use only in urgent situations (medical crisis, safety hazard, security incident, lock-in hazard). Coordinates are logged and sent immediately to security dispatchers.</p>
+          </div>
+
+          <div class="sos-button-wrapper">
+            <button class="btn btn-danger btn-lg-sos" id="sos-trigger-btn" onclick="triggerSOS()">
+              SEND EMERGENCY SOS ALERT
+            </button>
+          </div>
+
+          <div class="section-title-bar" style="margin-top: 2rem;">
+            <h4>Recent SOS Alerts Log</h4>
+          </div>
+          <div id="student-sos-history" class="table-container">
+            <p class="empty-text">No active emergency signals logged.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Admin Dashboard Command Center -->
+    <section id="view-admin" class="view">
+      <!-- Admin Live Alert Bar (Visible when active SOS alerts or new tickets exist) -->
+      <div id="admin-live-banner" class="admin-live-banner hidden">
+        <span class="live-pulse"></span>
+        <span id="admin-live-banner-text">Attention: Active alerts require response.</span>
+        <button class="btn btn-sm btn-outline" onclick="switchAdminTab('sos')">View Queue</button>
+      </div>
+
+      <!-- Admin Sub-Navigation Tabs -->
+      <nav class="sub-nav">
+        <button class="nav-tab active" onclick="switchAdminTab('stats')">Analytics</button>
+        <button class="nav-tab" onclick="switchAdminTab('tickets')">Tickets Management</button>
+        <button class="nav-tab tab-urgent" onclick="switchAdminTab('sos')">SOS Queue</button>
+        <button class="nav-tab" onclick="switchAdminTab('announcements')">Announcements</button>
+        <button class="nav-tab" onclick="switchAdminTab('lost-found')">Lost &amp; Found</button>
+        <button class="nav-tab" onclick="switchAdminTab('feedback')">Student Feedback</button>
+      </nav>
+
+      <!-- Admin Tab 1: Statistics & Analytics -->
+      <div id="admin-tab-stats" class="tab-panel active">
+        <div class="section-title-bar">
+          <div>
+            <h2>Operations Analytics</h2>
+            <p class="subtitle">Live metrics calculated directly from database records (Indian Standard Time).</p>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="loadAdminStats()">Refresh Metrics</button>
+        </div>
+
+        <!-- KPI Statistic Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="stat-total-tickets">0</div>
+            <div class="stat-lbl">Total Complaints</div>
+          </div>
+          <div class="stat-card border-open">
+            <div class="stat-val" id="stat-open-tickets">0</div>
+            <div class="stat-lbl">Open Tickets</div>
+          </div>
+          <div class="stat-card border-assigned">
+            <div class="stat-val" id="stat-assigned-tickets">0</div>
+            <div class="stat-lbl">Assigned to Staff</div>
+          </div>
+          <div class="stat-card border-progress">
+            <div class="stat-val" id="stat-progress-tickets">0</div>
+            <div class="stat-lbl">In Progress</div>
+          </div>
+          <div class="stat-card border-resolved">
+            <div class="stat-val" id="stat-resolved-tickets">0</div>
+            <div class="stat-lbl">Resolved</div>
+          </div>
+          <div class="stat-card border-urgent">
+            <div class="stat-val" id="stat-high-tickets">0</div>
+            <div class="stat-lbl">High Priority Active</div>
+          </div>
+          <div class="stat-card border-urgent">
+            <div class="stat-val" id="stat-active-sos">0</div>
+            <div class="stat-lbl">Active SOS Alerts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-avg-resolution">--</div>
+            <div class="stat-lbl">Avg Resolution Time</div>
+          </div>
+        </div>
+
+        <!-- Secondary Metrics Grid -->
+        <div class="two-col-grid" style="margin-top: 1.5rem;">
+          <div class="card">
+            <h4>Complaints by Department</h4>
+            <div id="stats-category-breakdown" class="stat-breakdown-list">
+              <p class="empty-text">Loading...</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4>Urgency &amp; Resolution Performance</h4>
+            <div id="stats-urgency-breakdown" class="stat-breakdown-list">
+              <p class="empty-text">Loading...</p>
+            </div>
+            <div class="stat-velocity-box">
+              <div><strong>Resolved Today (IST):</strong> <span id="stat-resolved-today">0</span></div>
+              <div><strong>Resolved This Week:</strong> <span id="stat-resolved-week">0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 2: Tickets Management -->
+      <div id="admin-tab-tickets" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Maintenance Tickets</h3>
+              <p class="subtitle">Search, filter, assign maintenance technicians, set resolution ETA, and update ticket state.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadAdminTickets()">Refresh</button>
+          </div>
+
+          <!-- Controls: Search, Filter, Sort Bar -->
+          <div class="filter-toolbar">
+            <div class="search-box">
+              <input type="text" id="admin-ticket-search" placeholder="Search by ticket ID, student email, or description..." oninput="debounceTicketSearch()">
+            </div>
+
+            <div class="filter-group">
+              <select id="filter-category" onchange="loadAdminTickets()">
+                <option value="All">All Categories</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Carpentry">Carpentry</option>
+                <option value="IT">IT Support</option>
+                <option value="Housekeeping">Housekeeping</option>
+                <option value="General">General</option>
+              </select>
+
+              <select id="filter-urgency" onchange="loadAdminTickets()">
+                <option value="All">All Priorities</option>
+                <option value="High">High Urgency</option>
+                <option value="Medium">Medium Urgency</option>
+                <option value="Low">Low Urgency</option>
+              </select>
+
+              <select id="filter-status" onchange="loadAdminTickets()">
+                <option value="All">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="Assigned">Assigned</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+
+              <select id="filter-team" onchange="loadAdminTickets()">
+                <option value="All">All Teams</option>
+                <option value="Plumbing">Plumbing Team</option>
+                <option value="Electrical">Electrical Team</option>
+                <option value="Carpentry">Carpentry Team</option>
+                <option value="Housekeeping">Housekeeping Team</option>
+                <option value="IT">IT Support</option>
+                <option value="Unassigned">Unassigned</option>
+              </select>
+
+              <select id="filter-sort" onchange="loadAdminTickets()">
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="urgency-desc">Highest Priority First</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tickets Table -->
+          <div id="admin-tickets-container" class="table-container">
+            <p class="empty-text">Loading tickets...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 3: SOS Command Center -->
+      <div id="admin-tab-sos" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Emergency SOS Incident Log</h3>
+              <p class="subtitle">Live queue of emergency panic alerts with GPS tracking, elapsed timers, and multi-stage security lifecycle.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadAdminSOS()">Refresh</button>
+          </div>
+
+          <div id="admin-sos-list" class="table-container">
+            <p class="empty-text">No active emergency signals.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 4: Announcements Manager -->
+      <div id="admin-tab-announcements" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Hostel Notices Management</h3>
+              <p class="subtitle">Publish official circulars, maintenance windows, and student advisories.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAnnouncementModal()">+ New Notice</button>
+          </div>
+
+          <div id="admin-announcements-list" class="announcements-stack">
+            <p class="empty-text">Loading notices...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 5: Lost & Found Moderation -->
+      <div id="admin-tab-lost-found" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Lost &amp; Found Directory</h3>
+              <p class="subtitle">Inspect reported items, photo uploads, and algorithm-suggested matches.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadLostFoundFeed('admin')">Refresh</button>
+          </div>
+
+          <div id="admin-lostfound-gallery" class="items-gallery">
+            <p class="empty-text">Loading reports...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab 6: Student Feedback -->
+      <div id="admin-tab-feedback" class="tab-panel">
+        <div class="card panel-card">
+          <div class="section-title-bar">
+            <div>
+              <h3>Service Ratings &amp; Feedback</h3>
+              <p class="subtitle">Ratings and written evaluations submitted by students upon ticket resolution.</p>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="loadAdminFeedback()">Refresh</button>
+          </div>
+
+          <div id="admin-feedback-container" class="table-container">
+            <p class="empty-text">Loading feedback...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 4. Modals & Dialogs -->
+
+  <!-- Feedback Submission Modal for Students -->
+  <div id="modal-feedback" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Rate Service Quality</h3>
+        <button class="btn-close" onclick="closeFeedbackModal()">&times;</button>
+      </div>
+      <form id="form-feedback">
+        <input type="hidden" id="feedback-ticket-id">
+        <p id="feedback-ticket-info" class="modal-sub"></p>
+        
+        <div class="form-group">
+          <label>Quality Rating</label>
+          <div class="rating-pill-group">
+            <button type="button" class="rating-pill" data-val="1" onclick="selectRating(1)">1 - Poor</button>
+            <button type="button" class="rating-pill" data-val="2" onclick="selectRating(2)">2 - Fair</button>
+            <button type="button" class="rating-pill" data-val="3" onclick="selectRating(3)">3 - Good</button>
+            <button type="button" class="rating-pill" data-val="4" onclick="selectRating(4)">4 - Very Good</button>
+            <button type="button" class="rating-pill active" data-val="5" onclick="selectRating(5)">5 - Excellent</button>
+          </div>
+          <input type="hidden" id="feedback-rating-val" value="5" required>
+        </div>
+
+        <div class="form-group">
+          <label for="feedback-comment">Comments / Suggestions (Optional)</label>
+          <textarea id="feedback-comment" rows="3" placeholder="Provide any additional comments regarding repair speed or staff conduct..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary btn-sm">Submit Evaluation</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeFeedbackModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Announcement Create/Edit Modal for Admin -->
+  <div id="modal-announcement" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-announcement-title">Publish Announcement</h3>
+        <button class="btn-close" onclick="closeAnnouncementModal()">&times;</button>
+      </div>
+      <form id="form-announcement">
+        <input type="hidden" id="ann-edit-id">
+        <div class="form-group">
+          <label for="ann-title">Headline</label>
+          <input type="text" id="ann-title" placeholder="e.g. Scheduled Water Interruption Notice" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="ann-category">Category</label>
+            <select id="ann-category">
+              <option value="General">General Notice</option>
+              <option value="Water Shutdown">Water Shutdown</option>
+              <option value="Electricity">Electricity Maintenance</option>
+              <option value="Hostel Maintenance">Hostel Maintenance</option>
+              <option value="Mess">Mess Notices</option>
+              <option value="Events">Campus Events</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="ann-priority">Priority</label>
+            <select id="ann-priority">
+              <option value="Normal">Normal</option>
+              <option value="High">High (Sends student notification)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ann-content">Announcement Content</label>
+          <textarea id="ann-content" rows="4" placeholder="Enter detailed notice information..." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary btn-sm" id="btn-save-announcement">Publish</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeAnnouncementModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

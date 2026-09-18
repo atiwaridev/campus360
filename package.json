@@ -1,0 +1,14 @@
+{
+  "name": "campus360",
+  "version": "1.0.0",
+  "description": "Student Hostel Campus Management MVP Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.0",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
